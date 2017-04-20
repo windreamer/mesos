@@ -24,23 +24,58 @@
 #include <stout/path.hpp>
 #include <stout/strings.hpp>
 #include <stout/try.hpp>
+#include <stout/protobuf.hpp>
 
 #include <stout/os/read.hpp>
 
 namespace flags {
 
+// Forward declarations
+template <typename T> Try<T> parse(const std::string& value);
+template <> Try<JSON::Object> parse(const std::string& value);
+
+// Parse Functors for default values.
+template <typename T, typename Enable = void>
+struct _ParseFunctor {
+  inline Try<T> operator() (const std::string& value) {
+    T t;
+    std::istringstream in(value);
+    in >> t;
+
+    if (in && in.eof()) {
+      return t;
+    }
+
+    return Error("Failed to convert into required type");
+  }
+};
+
+
+// Parse Functors for protobuf messages.
+template <typename T>
+struct _ParseFunctor<
+  T,
+  typename std::enable_if<
+    std::is_base_of<::google::protobuf::Message, T>::value
+  >::type
+> {
+  inline Try<T> operator() (const std::string& value) {
+    // Convert from string or file to JSON.
+    Try<JSON::Object> json = parse<JSON::Object>(value);
+    if (json.isError()) {
+      return Error(json.error());
+    }
+
+    // Convert from JSON to Protobuf.
+    return protobuf::parse<T>(json.get());
+  }
+};
+
 template <typename T>
 Try<T> parse(const std::string& value)
 {
-  T t;
-  std::istringstream in(value);
-  in >> t;
-
-  if (in && in.eof()) {
-    return t;
-  }
-
-  return Error("Failed to convert into required type");
+  _ParseFunctor<T> functor;
+  return functor(value);
 }
 
 
