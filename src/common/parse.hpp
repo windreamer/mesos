@@ -32,62 +32,6 @@
 
 namespace flags {
 
-template <>
-inline Try<mesos::ACLs> parse(const std::string& value)
-{
-  // Convert from string or file to JSON.
-  Try<JSON::Object> json = parse<JSON::Object>(value);
-  if (json.isError()) {
-    return Error(json.error());
-  }
-
-  // Convert from JSON to Protobuf.
-  return protobuf::parse<mesos::ACLs>(json.get());
-}
-
-
-template <>
-inline Try<mesos::RateLimits> parse(const std::string& value)
-{
-  // Convert from string or file to JSON.
-  Try<JSON::Object> json = parse<JSON::Object>(value);
-  if (json.isError()) {
-    return Error(json.error());
-  }
-
-  // Convert from JSON to Protobuf.
-  return protobuf::parse<mesos::RateLimits>(json.get());
-}
-
-
-template <>
-inline Try<mesos::Modules> parse(const std::string& value)
-{
-  // Convert from string or file to JSON.
-  Try<JSON::Object> json = parse<JSON::Object>(value);
-  if (json.isError()) {
-    return Error(json.error());
-  }
-
-  // Convert from JSON to Protobuf.
-  return protobuf::parse<mesos::Modules>(json.get());
-}
-
-
-template <>
-inline Try<mesos::ContainerInfo> parse(const std::string& value)
-{
-  // Convert from string or file to JSON.
-  Try<JSON::Object> json = parse<JSON::Object>(value);
-  if (json.isError()) {
-    return Error(json.error());
-  }
-
-  // Convert from JSON to Protobuf.
-  return protobuf::parse<mesos::ContainerInfo>(json.get());
-}
-
-
 // When the same variable is listed multiple times,
 // uses only the last value.
 template <>
@@ -160,72 +104,6 @@ inline Try<std::set<std::string>> parse(const std::string& value)
   }
 
   return result;
-}
-
-
-template <>
-inline Try<mesos::CapabilityInfo> parse(const std::string& value)
-{
-  Try<JSON::Object> json = parse<JSON::Object>(value);
-  if (json.isError()) {
-    return Error(json.error());
-  }
-
-  return protobuf::parse<mesos::CapabilityInfo>(json.get());
-}
-
-
-template <>
-inline Try<mesos::Environment> parse(const std::string& value)
-{
-  Try<JSON::Object> json = parse<JSON::Object>(value);
-  if (json.isError()) {
-    return Error(json.error());
-  }
-
-  return protobuf::parse<mesos::Environment>(json.get());
-}
-
-
-template <>
-inline Try<mesos::RLimitInfo> parse(const std::string& value)
-{
-  Try<JSON::Object> json = parse<JSON::Object>(value);
-  if (json.isError()) {
-    return Error(json.error());
-  }
-
-  return protobuf::parse<mesos::RLimitInfo>(json.get());
-}
-
-
-template <>
-inline Try<mesos::FrameworkID> parse(const std::string& value)
-{
-  mesos::FrameworkID frameworkId;
-  frameworkId.set_value(value);
-
-  return frameworkId;
-}
-
-
-template <>
-inline Try<mesos::ExecutorID> parse(const std::string& value)
-{
-  mesos::ExecutorID executorId;
-  executorId.set_value(value);
-
-  return executorId;
-}
-
-
-template <>
-inline Try<mesos::SlaveID> parse(const std::string& value)
-{
-  mesos::SlaveID slaveId;
-  slaveId.set_value(value);
-
-  return slaveId;
 }
 
 } // namespace flags {
