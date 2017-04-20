@@ -468,6 +468,13 @@ ostream& operator<<(ostream& stream, const CapabilityInfo& capabilityInfo)
 }
 
 
+
+ostream& operator<<(ostream& stream, const DeviceWhitelist& deviceWhitelist)
+{
+  return stream << JSON::protobuf(deviceWhitelist);
+}
+
+
 ostream& operator<<(ostream& stream, const CheckStatusInfo& checkStatusInfo)
 {
   switch (checkStatusInfo.type()) {

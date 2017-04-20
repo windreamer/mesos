@@ -454,6 +454,27 @@ mesos::internal::slave::Flags::Flags()
       "handles that can be used with the primary handle. This will take\n"
       "effect only when the `--cgroups_net_cls_primary_handle is set.");
 
+  add(&Flags::allowed_devices,
+      "allowed_devices",
+      "JSON array representing the devices that will be additionally\n"
+      "whitelisted by cgroups devices subsystem. This will take effect\n"
+      "only when `cgroups/devices` is set in `--isolation` flag.\n"
+      "Example:\n"
+      "{\n"
+      "  \"allowed_devices\": [\n"
+      "    {\n"
+      "      \"device\": {\n"
+      "        \"path\": \"/path/to/device\"\n"
+      "      },\n"
+      "      \"access\": {\n"
+      "        \"read\": true,\n"
+      "        \"write\": false,\n"
+      "        \"mknod\": false\n"
+      "      }\n"
+      "    }\n"
+      "  ]\n"
+      "}\n");
+
   add(&Flags::agent_subsystems,
       "agent_subsystems",
       flags::DeprecatedName("slave_subsystems"),
